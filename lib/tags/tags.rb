@@ -20,6 +20,29 @@ module RubyBBCode
         :html_open => '', :html_close => '',
         :description => 'Center a text',
         :example => '[center]This is centered[/center].'},
+      :list => {
+        :html_open => "\n", :html_close => "\n",
+        :description => 'Unordered list',
+        :example => '[list][*]List item[/*][*]Another list item[/*][/list].',
+        :allow_tag_param => true, :allow_tag_param_children => true,
+        :tag_param => /(\w*)/,
+        :tag_param_tokens => [{:token => :order}],
+        :tag_param_lambda => ->(param) {
+          if param == "1"
+            "1."
+          else
+            "-"
+          end
+        },
+        :only_allow => [ :* ]},
+      :* => {
+        :html_open => {
+          :list => '  %parent_order% '
+        },
+        :html_close => "\n",
+        :description => 'List item',
+        :example => '[list][*]List item[/*][*]Another list item[/*][/list].',
+        :only_in => [ :list ]},
       :ul => {
         :html_open => "\n", :html_close => "\n",
         :description => 'Unordered list',

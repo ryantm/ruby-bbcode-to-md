@@ -2,6 +2,15 @@ require_relative 'test_helper'
 
 class RubyBbcodeTest < MiniTest::Unit::TestCase
 
+  def test_list_tag
+    assert_equal "\n  1. item 1\n  1. item 2\n\n",
+                 "[list=1]\n[*]item 1[/*]\n[*]item 2[/*]\n[/list]".bbcode_to_md
+    assert_equal "\n  - item 1\n  - item 2\n\n",
+                 "[list][*]item 1[/*][*]item 2[/*][/list]".bbcode_to_md
+    assert_equal "\n  - item 1\n  - item 2\n\n",
+                 "[list]\n[*]item 1[/*]\n[*]item 2[/*]\n[/list]".bbcode_to_md
+  end
+
   def test_multiline
     assert_equal "line1\nline2", "line1\nline2".bbcode_to_md
     assert_equal "line1\nline2", "line1\r\nline2".bbcode_to_md
@@ -37,6 +46,7 @@ class RubyBbcodeTest < MiniTest::Unit::TestCase
 
   def test_ordered_list
     assert_equal "\n  1. item 1\n  1. item 2\n\n", '[ol][li]item 1[/li][li]item 2[/li][/ol]'.bbcode_to_md
+#    assert_equal "\n  1. item 1\n  1. item 2\n\n", "[ol]\n[li]item 1[/li]\n[li]item 2[/li]\n[/ol]".bbcode_to_md
   end
 
   def test_unordered_list
@@ -49,9 +59,8 @@ class RubyBbcodeTest < MiniTest::Unit::TestCase
   end
 
   def test_whitespace_in_only_allowed_tags
-    assert_equal "\n\n  1. item 1\n\n  1. item 2\n\n\n", "[ol]\n[li]item 1[/li]\n[li]item 2[/li]\n[/ol]".bbcode_to_md
-    assert_equal "\n   1. item 1\n    1. item 2\n\n", "[ol] [li]item 1[/li]  [li]item 2[/li][/ol]".bbcode_to_md
-
+    assert_equal "\n  1. item 1\n  1. item 2\n\n", "[ol]\n[li]item 1[/li]\n[li]item 2[/li]\n[/ol]".bbcode_to_md
+    assert_equal "\n  1. item 1\n  1.  item 2\n\n", "[ol] [li]item 1[/li]  [li] item 2[/li][/ol]".bbcode_to_md
   end
 
   def test_quote

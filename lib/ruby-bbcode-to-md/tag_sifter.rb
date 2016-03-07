@@ -8,7 +8,7 @@ module RubyBBCode
       @text = escape_html ? text_to_parse.gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', "&quot;") : text_to_parse
 
       @dictionary = dictionary # the dictionary for all the defined tags in tags.rb
-      @bbtree = BBTree.new({:nodes => TagCollection.new}, dictionary)
+      @bbtree = BBTree.new(dictionary)
       @ti = nil
       @errors = false
     end
@@ -19,7 +19,7 @@ module RubyBBCode
 
 
     def process_text
-      regex_string = '((\[ (\/)? (\w+) ((=[^\[\]]+) | (\s\w+=\w+)* | ([^\]]*))? \]) | ([^\[]+))'
+      regex_string = '((\[ (\/)? ([\w\*]+) ((=[^\[\]]+) | (\s\w+=\w+)* | ([^\]]*))? \]) | ([^\[]+))'
       @text.scan(/#{regex_string}/ix) do |tag_info|
         @ti = TagInfo.new(tag_info, @dictionary)
 
@@ -40,6 +40,11 @@ module RubyBBCode
           element = {:is_tag => false, :text => @ti.text }
           if within_open_tag?
             tag = @bbtree.current_node.definition
+
+            if tag[:only_allow] and !tag[:only_allow].empty?
+              next
+            end
+
             if tag[:require_between]
               @bbtree.current_node[:between] = get_formatted_element_params
               if candidate_for_using_between_as_param?

@@ -19,7 +19,6 @@ module RubyBBCode
       @element[key] = value
     end
 
-    # Debugging/ visualization purposes
     def type
       return :tag if @element[:is_tag]
       return :text if !@element[:is_tag]
@@ -46,6 +45,10 @@ module RubyBBCode
 
     def allow_tag_param?
       definition[:allow_tag_param]
+    end
+
+    def allow_tag_param_children?
+      definition[:allow_tag_param_children]
     end
 
     # shows the tag definition for this TagNode as defined in tags.rb

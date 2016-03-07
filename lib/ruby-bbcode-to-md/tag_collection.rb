@@ -19,6 +19,10 @@ module RubyBBCode
             t.remove_unused_tokens!
           end
 
+          if node.allow_tag_param_children?
+            t.substitute_children_html_params(children_html)
+          end
+
           html_string += t.opening_html
 
           html_string += children_html if children_html && !node.definition[:require_between]
@@ -33,8 +37,6 @@ module RubyBBCode
 
       html_string
     end
-
-
 
     # This class is designed to help us build up the HTML data.  It starts out as a template such as...
     #   @opening_html = '<a href="%url%">%between%'
@@ -110,8 +112,16 @@ module RubyBBCode
         end
       end
 
-      private
+      def substitute_children_html_params(children_html)
+        return if children_html.nil?
+        @tag_definition[:tag_param_tokens].each do |token|
+          param = (@node[:params] && @node[:params][:tag_param]) || nil
+          sub = @tag_definition[:tag_param_lambda][param]
+          children_html.gsub!("%parent_#{token[:token]}%", sub)
+        end
+      end
 
+      private
       def between_text_goes_into_html_output_as_param?
         @tag_definition[:require_between]
       end

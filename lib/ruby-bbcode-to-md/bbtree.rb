@@ -12,26 +12,16 @@ module RubyBBCode
   class BBTree
     include ::RubyBBCode::DebugBBTree
     attr_accessor :current_node, :tags_list
+    attr_reader :tag_collection
+    alias :nodes :tag_collection
+    alias :children :nodes
 
-    def initialize(hash = { :nodes => TagCollection.new }, dictionary)
-      @bbtree = hash
-      @current_node = TagNode.new(@bbtree)
+    def initialize(dictionary, tag_collection = TagCollection.new)
+      @tag_collection = tag_collection
+      @current_node = TagNode.new({nodes: tag_collection})
       @tags_list = []
       @dictionary = dictionary
     end
-
-    def [](key)
-      @bbtree[key]
-    end
-
-    def []=(key, value)
-      @bbtree[key] = value
-    end
-
-    def nodes
-      @bbtree[:nodes]
-    end
-    alias :children :nodes   # needed due to the similarities between BBTree[:nodes] and TagNode[:nodes]... they're walked through in debugging.rb right now
 
     def type
       :bbtree
@@ -47,32 +37,19 @@ module RubyBBCode
       @tags_list.last.to_sym
     end
 
-    def parent_has_constraints_on_children?
-      @dictionary[parent_tag][:only_allow] != nil
-    end
-
-    # Advance to next level (the node we just added)
     def escalate_bbtree(element)
       element[:parent_tag] = parent_tag
+      element[:parent_node] = @current_node
       @tags_list.push element[:tag]
       @current_node = TagNode.new(element)
     end
 
     # Step down the bbtree a notch because we've reached a closing tag
     def retrogress_bbtree
-      @tags_list.pop     # remove latest tag in tags_list since it's closed now...
-      # The parsed data manifests in @bbtree.current_node.children << TagNode.new(element) which I think is more confusing than needed
+      return if !within_open_tag?
 
-      if within_open_tag?
-        # Set the current node to be the node we've just parsed over which is infact within another node??...
-        @current_node = TagNode.new(self.nodes.last)
-      else # If we're still at the root of the BBTree or have returned back to the root via encountring closing tags...
-        @current_node = TagNode.new({:nodes => self.nodes})
-      end
-
-      # OKOKOK!
-      # Since @bbtree = @current_node, if we ever set @current_node to something, we're actually changing @bbtree...
-      # therefore... my brain is now numb
+      @tags_list.pop
+      @current_node = @current_node[:parent_node]
     end
 
     def redefine_parent_tag_as_text
