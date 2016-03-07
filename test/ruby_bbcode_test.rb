@@ -8,6 +8,8 @@ class RubyBbcodeTest < MiniTest::Unit::TestCase
     assert_equal "\n  - item 1\n  - item 2\n\n",
                  "[list][*]item 1[/*][*]item 2[/*][/list]".bbcode_to_md
     assert_equal "\n  - item 1\n  - item 2\n\n",
+                 "[list=a][*]item 1[/*][*]item 2[/*][/list]".bbcode_to_md
+    assert_equal "\n  - item 1\n  - item 2\n\n",
                  "[list]\n[*]item 1[/*]\n[*]item 2[/*]\n[/list]".bbcode_to_md
   end
 
