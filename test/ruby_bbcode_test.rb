@@ -73,9 +73,9 @@ class RubyBbcodeTest < MiniTest::Unit::TestCase
   end
 
   def test_image
-    assert_equal 'http://www.ruby-lang.org/images/logo.gif',
+    assert_equal '![](http://www.ruby-lang.org/images/logo.gif)',
                    '[img]http://www.ruby-lang.org/images/logo.gif[/img]'.bbcode_to_md
-    assert_equal 'http://www.ruby-lang.org/images/logo.gif',
+    assert_equal '![](http://www.ruby-lang.org/images/logo.gif)',
                    '[img=95x96]http://www.ruby-lang.org/images/logo.gif[/img]'.bbcode_to_md
   end
 

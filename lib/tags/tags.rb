@@ -40,7 +40,7 @@ module RubyBBCode
         :example => '[ul][li]List item[/li][li]Another list item[/li][/ul].',
         :only_in => [ :ul, :ol ]},
       :img => {
-        :html_open => '%between%', :html_close => '',
+        :html_open => '![](%between%)', :html_close => '',
         :description => 'Image',
         :example => '[img]http://www.google.com/intl/en_ALL/images/logo.gif[/img].',
         :only_allow => [],
