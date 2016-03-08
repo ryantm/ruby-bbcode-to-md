@@ -209,7 +209,7 @@ class RubyBbcodeTest < MiniTest::Unit::TestCase
   end
 
   def test_code
-    assert_equal '```\nx = x+1;\n```', '[code]x = x+1;[/code]'.bbcode_to_md
+    assert_equal "```\nx = x+1;\n```", '[code]x = x+1;[/code]'.bbcode_to_md
   end
 
 end

@@ -106,7 +106,7 @@ module RubyBBCode
         :tag_param => /(([a-z]+)|(#[0-9a-f]{6}))/i,
         :tag_param_tokens => [{:token => :color}]},
       :code => {
-        :html_open => '```\n%between%\n```', :html_close => '',
+        :html_open => "```\n%between%\n```", :html_close => '',
         :description => 'preformatted code block',
         :example => '[code] x = x + 1;[/code]',
         :only_allow => [],
